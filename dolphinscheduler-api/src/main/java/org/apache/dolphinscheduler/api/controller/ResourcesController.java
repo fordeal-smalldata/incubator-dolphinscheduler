@@ -67,6 +67,7 @@ public class ResourcesController extends BaseController{
      * @param alias alias
      * @param description description
      * @param type type
+     * @param overwrite overwrite
      * @param file file
      * @return create result code
      */

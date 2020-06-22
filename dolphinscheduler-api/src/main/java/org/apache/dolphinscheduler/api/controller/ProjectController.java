@@ -259,19 +259,22 @@ public class ProjectController extends BaseController {
      *
      * @param loginUser login user
      * @param file resource file
+     * @param projectName 项目名
      * @return import result code
      */
     @ApiOperation(value = "importProcessDefinition", notes= "EXPORT_PROCCESS_DEFINITION_NOTES")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "file", value = "RESOURCE_FILE", required = true, dataType = "MultipartFile")
+            @ApiImplicitParam(name = "file", value = "RESOURCE_FILE", required = true, dataType = "MultipartFile"),
+            @ApiImplicitParam(name = "projectName", value = "PROJECT_NAME", dataType ="String")
     })
     @PostMapping(value="/importProcessDefinition")
     public Result importProcessDefinition(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
-                                          @RequestParam("file") MultipartFile file){
+                                          @RequestParam("file") MultipartFile file,
+                                          @RequestParam("projectName") String projectName){
         try{
             logger.info("import process definition by id, login user:{}",
                     loginUser.getUserName());
-            Map<String, Object> result = processDefinitionService.importProcessDefinition(loginUser,file);
+            Map<String, Object> result = processDefinitionService.importProcessDefinitionWithSuffix(loginUser,file, projectName);
             return returnDataList(result);
         }catch (Exception e){
             logger.error(IMPORT_PROCESS_DEFINE_ERROR.getMsg(),e);

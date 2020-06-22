@@ -76,6 +76,7 @@ public class ResourcesService extends BaseService {
      * @param name alias
      * @param desc description
      * @param file file
+     * @param overwrite overwrite
      * @param type type
      * @return create result code
      */

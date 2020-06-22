@@ -23,11 +23,10 @@
           :disabled="progress === 0 ? false : true">
     <template slot="content">
       <form name="files" enctype="multipart/form-data" method="post">
-        <div class="file-update-model"
+        <div class="definition-update-model"
              @drop.prevent="_onDrop"
              @dragover.prevent="dragOver = true"
-             @dragleave.prevent="dragOver = false"
-             id="file-update-model">
+             id="definition-update-model">
           <div class="tooltip-info">
             <i class="fa ans-icon-notice-solid"></i>
             <span>{{$t('Drag the file into the current upload window')}}</span>
@@ -40,7 +39,7 @@
               <i class="ans ans-icon-upload"></i>
             </div>
             <p class="p1">
-              <span>{{$t('Drag area upload')}}</span>
+              <span>{{$t('Drag files here to upload')}}</span>
             </p>
           </div>
           <m-list-box-f>
@@ -141,7 +140,8 @@
           let self = this
           let formData = new FormData()
           formData.append('file', this.file)
-          io.post(`projects/importProcessDefinition`, res => {
+          formData.append('projectName',this.store.state.dag.projectName)
+          io.post(`projects/import-definition`, res => {
             this.$message.success(res.msg)
             resolve()
             self.$emit('onUpdate')
@@ -177,7 +177,7 @@
         let file = e.dataTransfer.files[0]
         this.file = file
         this.name = file.name
-        this.dragOver = false
+        this.dragOver = true
       }
     },
     mounted () {
@@ -192,7 +192,7 @@
 </script>
 
 <style lang="scss" rel="stylesheet/scss">
-  .file-update-model {
+  .definition-update-model {
     .tooltip-info {
       position: absolute;
       left: 20px;
@@ -253,18 +253,18 @@
     }
     .update-popup {
       width: calc(100% - 20px);
-      height: calc(100% - 20px);
+      height: calc(100% - 115px);
       background: rgba(255,253,239,.7);
       position: absolute;
-      top: 10px;
+      top: 55px;
       left: 10px;
       border-radius: 3px;
       z-index: 1;
       border: .18rem dashed #cccccc;
       .icon-box {
         text-align: center;
-        margin-top: 96px;
-        .fa {
+        margin-top: 30px;
+        .fa,.ans {
           font-size: 50px;
           color: #2d8cf0;
         }
@@ -273,7 +273,7 @@
         text-align: center;
         font-size: 16px;
         color: #333;
-        padding-top: 8px;
+        padding-top: 0px;
       }
     }
   }
