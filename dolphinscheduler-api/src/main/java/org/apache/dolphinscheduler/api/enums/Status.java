@@ -171,6 +171,7 @@ public enum Status {
     QUERY_WORKER_GROUP_FAIL(100146,"query worker group fail "),
     DELETE_WORKER_GROUP_FAIL(100147,"delete worker group fail "),
 
+    GET_USER_TOKEN_ERROR(100148,"get user token error"),
 
     UDF_FUNCTION_NOT_EXIST(20001, "UDF function not found"),
     UDF_FUNCTION_EXISTS(20002, "UDF function already exists"),
@@ -183,6 +184,11 @@ public enum Status {
     HDFS_COPY_FAIL(20009, "hdfs copy {0} -> {1} fail"),
     RESOURCE_FILE_EXIST(20010, "resource file {0} already exists in hdfs,please delete it or change name!"),
     RESOURCE_FILE_NOT_EXIST(20011, "resource file {0} not exists in hdfs!"),
+    CREATE_FOLDER_FAIL(20012, "create folder fail"),
+    RENAME_FOLDER_FAIL(20013, "rename folder fail"),
+    NAME_IRREGULAR(20014, "Irregular names"),
+    RESOURCE_DELETE_FAIL(20015, "resource delete fail"),
+    CREATE_ALERT_GROUP_ERROR_WITH_DESC_EMPTY(20016,"create alert group error, description cannot be empty"),
 
 
 
@@ -193,7 +199,6 @@ public enum Status {
     PROCESS_INSTANCE_NOT_EXIST(50001, "process instance {0} does not exist"),
     PROCESS_INSTANCE_EXIST(50002, "process instance {0} already exists"),
     PROCESS_DEFINE_NOT_EXIST(50003, "process definition {0} does not exist"),
-    PROCESS_DEFINE_NOT_RELEASE(50004, "process definition {0} not on line"),
     PROCESS_INSTANCE_ALREADY_CHANGED(50005, "the status of process instance {0} is already {1}"),
     PROCESS_INSTANCE_STATE_OPERATION_ERROR(50006, "the status of process instance {0} is {1},Cannot perform {2} operation"),
     SUB_PROCESS_INSTANCE_NOT_EXIST(50007, "the task belong to process instance does not exist"),
@@ -220,7 +225,7 @@ public enum Status {
     TENANT_NOT_SUITABLE(50027,"there is not any tenant suitable, please choose a tenant available."),
     EXPORT_PROCESS_DEFINE_BY_ID_ERROR(50028,"export process definition by id error"),
     IMPORT_PROCESS_DEFINE_ERROR(50029,"import process definition error"),
-    IMPORT_AZKABAN_PROCESS_DEFINE_ERROR(50030,"import azkaban process definition error"),
+    IMPORT_AZKABAN_PROCESS_DEFINE_ERROR(50030,"import azkaban process definition error, {0}"),
 
     HDFS_NOT_STARTUP(60001,"hdfs not startup"),
     HDFS_TERANT_RESOURCES_FILE_EXISTS(60002,"resource file exists,please delete resource first"),
@@ -249,8 +254,8 @@ public enum Status {
     KERBEROS_STARTUP_STATE(100001,"get kerberos startup state error"),
     ;
 
-    private int code;
-    private String msg;
+    private final int code;
+    private final String msg;
 
     private Status(int code, String msg) {
         this.code = code;
@@ -261,15 +266,7 @@ public enum Status {
         return this.code;
     }
 
-    public void setCode(int code) {
-        this.code = code;
-    }
-
     public String getMsg() {
         return this.msg;
-    }
-
-    public void setMsg(String msg) {
-        this.msg = msg;
     }
 }
