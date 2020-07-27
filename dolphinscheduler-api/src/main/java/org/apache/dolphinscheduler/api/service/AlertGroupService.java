@@ -114,6 +114,11 @@ public class AlertGroupService extends BaseService{
             return result;
         }
 
+        if (StringUtils.isBlank(desc)) {
+            putMsg(result, Status.CREATE_ALERT_GROUP_ERROR_WITH_DESC_EMPTY);
+            return result;
+        }
+
         AlertGroup alertGroup = new AlertGroup();
         Date now = new Date();
 

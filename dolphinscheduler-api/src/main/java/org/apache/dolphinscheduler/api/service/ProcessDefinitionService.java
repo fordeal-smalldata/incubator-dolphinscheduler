@@ -594,7 +594,7 @@ public class ProcessDefinitionService extends BaseDAGService {
                 logger.error(String.format("user = %s, %s", loginUser.getUserName(),
                                            Status.IMPORT_AZKABAN_PROCESS_DEFINE_ERROR.getMsg()), e);
                 Map<String, Object> result = new HashMap<>();
-                putMsg(result, Status.IMPORT_AZKABAN_PROCESS_DEFINE_ERROR);
+                putMsg(result, Status.IMPORT_AZKABAN_PROCESS_DEFINE_ERROR, e.getMessage());
                 return result;
             }
         } else {

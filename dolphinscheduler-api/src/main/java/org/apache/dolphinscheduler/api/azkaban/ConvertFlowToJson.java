@@ -19,8 +19,11 @@ package org.apache.dolphinscheduler.api.azkaban;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import org.apache.dolphinscheduler.common.utils.JSONUtils;
+import org.apache.dolphinscheduler.common.utils.SpringApplicationContext;
 import org.apache.dolphinscheduler.common.utils.StringUtils;
 import org.apache.dolphinscheduler.common.utils.placeholder.PlaceholderUtils;
+import org.apache.dolphinscheduler.dao.entity.WorkerGroup;
+import org.apache.dolphinscheduler.dao.mapper.WorkerGroupMapper;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -39,6 +42,11 @@ public class ConvertFlowToJson {
     private static final Pattern hqlPattern = Pattern.compile("\\S*\\.(jar|hql)");
     private static final String flowNameTemplate = "az-%s-%s";
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+    private static final WorkerGroupMapper workerGroupMapper;
+
+    static {
+        workerGroupMapper = SpringApplicationContext.getBean(WorkerGroupMapper.class);
+    }
 
     /**
      * Convert azkaban flow to dolphin json
@@ -115,6 +123,17 @@ public class ConvertFlowToJson {
         definitionMap.put("processDefinitionName", nodeBean.getName());
         definitionMap.put("processDefinitionDescription", "");
 
+        // 获取分组信息
+        String workerGroupName = "Default";
+        if (nodeBean.getFlowParameters() != null) {
+            workerGroupName = nodeBean.getFlowParameters().getOrDefault("useExecutorLabel", "Default");
+        }
+        List<WorkerGroup> workerGroups = workerGroupMapper.queryWorkerGroupByName(workerGroupName);
+        if (workerGroups.isEmpty()) {
+            throw new RuntimeException(String.format("不存在worker分组: %s", workerGroupName));
+        }
+        int workerGroupId = workerGroups.get(0).getId();
+
         // 设置重试次数和时间
         String maxRetryTimes = nodeBean.getConfig().getOrDefault("retries", "0");
         String retryInterval = nodeBean.getConfig().getOrDefault("retry.backoff", "0");
@@ -149,7 +168,7 @@ public class ConvertFlowToJson {
 
         nodeMap.put("tasks", nodes.stream().map(node -> {
             Map<String, Object> taskConfig = new HashMap<>();
-            taskConfig.put("workerGroupId", 1);
+            taskConfig.put("workerGroupId", workerGroupId);
             taskConfig.put("description", "");
             taskConfig.put("runFlag", "NORMAL");
             taskConfig.put("type", "SHELL");

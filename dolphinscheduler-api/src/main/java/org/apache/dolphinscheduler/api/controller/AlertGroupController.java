@@ -74,7 +74,7 @@ public class AlertGroupController extends  BaseController{
         logger.info("loginUser user {}, create alertgroup, groupName: {}, groupType: {}, desc: {}",
                 loginUser.getUserName(), groupName, groupType,description);
         try {
-            Map<String, Object> result = alertGroupService.createAlertgroup(loginUser, groupName, groupType,description);
+            Map<String, Object> result = alertGroupService.createAlertgroup(loginUser, groupName, groupType, description);
             return returnDataList(result);
         }catch (Exception e){
             logger.error(Status.CREATE_ALERT_GROUP_ERROR.getMsg(),e);
